@@ -1,0 +1,14 @@
+C:\Users\luiji\andorid_camera_system\server\ServerClient\bin\Debug\net6.0\ServerClient.exe
+C:\Users\luiji\andorid_camera_system\server\ServerClient\bin\Debug\net6.0\ServerClient.deps.json
+C:\Users\luiji\andorid_camera_system\server\ServerClient\bin\Debug\net6.0\ServerClient.runtimeconfig.json
+C:\Users\luiji\andorid_camera_system\server\ServerClient\bin\Debug\net6.0\ServerClient.dll
+C:\Users\luiji\andorid_camera_system\server\ServerClient\bin\Debug\net6.0\ServerClient.pdb
+C:\Users\luiji\andorid_camera_system\server\ServerClient\obj\Debug\net6.0\ServerClient.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luiji\andorid_camera_system\server\ServerClient\obj\Debug\net6.0\ServerClient.AssemblyInfoInputs.cache
+C:\Users\luiji\andorid_camera_system\server\ServerClient\obj\Debug\net6.0\ServerClient.AssemblyInfo.cs
+C:\Users\luiji\andorid_camera_system\server\ServerClient\obj\Debug\net6.0\ServerClient.csproj.CoreCompileInputs.cache
+C:\Users\luiji\andorid_camera_system\server\ServerClient\obj\Debug\net6.0\ServerClient.dll
+C:\Users\luiji\andorid_camera_system\server\ServerClient\obj\Debug\net6.0\refint\ServerClient.dll
+C:\Users\luiji\andorid_camera_system\server\ServerClient\obj\Debug\net6.0\ServerClient.pdb
+C:\Users\luiji\andorid_camera_system\server\ServerClient\obj\Debug\net6.0\ServerClient.genruntimeconfig.cache
+C:\Users\luiji\andorid_camera_system\server\ServerClient\obj\Debug\net6.0\ref\ServerClient.dll
