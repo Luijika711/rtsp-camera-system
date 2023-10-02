@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "7xSuxhpMLiO+bpkmCV7z+ETzHn3Bp7NW91CTHJNYttmVIIlXoW2vhzZPvlz8Ewui2f6PL2Qzfxkbpl5L71yQow==",
+  "dgSpecHash": "chYJRaKhuVXeP6u+dWH0G9R0QGpuG7W00BpB6UDrLQ5EXo1esms9g464fLSHwcP/1opv0cToDKXXiCiB1RetMg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\luiji\\andorid_camera_system\\server\\ServerClient\\ServerClient.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/home/lui/repos/andorid_camera_system/server/ServerClient/ServerClient.csproj",
+  "expectedPackageFiles": [
+    "/home/lui/.nuget/packages/microsoft.netcore.app.host.linux-x64/6.0.21/microsoft.netcore.app.host.linux-x64.6.0.21.nupkg.sha512"
+  ],
   "logs": []
 }
