@@ -15,6 +15,12 @@ namespace cameraViewer
             while (true)
             {
                 Bitmap bmp = reader.ReadVideoFrame();
+                
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.DrawString(DateTime.Now.ToString(), new Font("Arial", 25), new SolidBrush(color: Color.Black), 0, 0);
+                }
+                
                 pictureBox1.Image = bmp;
             }
         }
