@@ -22,6 +22,7 @@ namespace cameraViewer
             public bool isActive = false;
             string fileName;
             private HaarObjectDetector faceDetector = new HaarObjectDetector(new FaceHaarCascade());
+            private DateTime lastNotificationTime = new DateTime();
             public VideoStreamWindow(string ip,int idx)
             {
                 reader.Open(ip);
@@ -34,6 +35,11 @@ namespace cameraViewer
 
                 videoWriter.Open("videos/camera_" + idx.ToString() + "/" + numberOfVideos.ToString() + ".avi", bmp.Width, bmp.Height, 24, VideoCodec.Default, 25000);
             }
+            public void closeStreams()
+            {
+                videoWriter.Close();
+                reader.Close();
+            }
             public void set_frame(ref PictureBox pictureBox1)
             {
                 int frameIndex = 0;
@@ -41,14 +47,14 @@ namespace cameraViewer
                 {
                     try
                     {
-
                         Bitmap bmp = reader.ReadVideoFrame();
+                        bool frameHasFace = false;
                         if(frameIndex%120 == 0)
                         {
                             var faceRectangles = faceDetector.ProcessFrame(bmp);
                             if (faceRectangles.Length > 0)
                             {
-                                Debug.Print("found face!");
+                                frameHasFace = true;
                             }
                         }
                         
@@ -56,11 +62,13 @@ namespace cameraViewer
                         {
                             g.FillRectangle(new SolidBrush(color: Color.White), new Rectangle(0, 0, 310, 45));
                             g.DrawString(DateTime.Now.ToString(), new Font("Arial", 25), new SolidBrush(color: Color.Black), 0, 0);
-                            //foreach(var rect in faceRectangles)
-                            //{
-                            //    g.DrawRectangle(new Pen(Color.Green),rect);
-                            //}
                         }
+
+                        if (frameHasFace == true)//code goes here
+                        {
+                            Debug.Print("[FACE FOUND]");       
+                        }
+
                         videoWriter.WriteVideoFrame(bmp);
                         if(isActive == true)
                             pictureBox1.Image = bmp;
@@ -74,6 +82,8 @@ namespace cameraViewer
                 }
             }
         }
+
+
         List<VideoStreamWindow> videoStreams = new List<VideoStreamWindow>();
         List<Thread> videoStreamThreads = new List<Thread>();
         public Form1()
