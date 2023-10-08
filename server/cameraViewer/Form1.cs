@@ -6,7 +6,7 @@ using Accord.Video.FFMPEG;
 using System.Drawing;
 using System.Threading;
 using System.Collections.Generic;
-
+using System.IO;
 namespace cameraViewer
 {
     public partial class Form1 : Form
@@ -15,44 +15,40 @@ namespace cameraViewer
         {
             private VideoFileReader reader = new VideoFileReader();
             private VideoFileWriter videoWriter = new VideoFileWriter();
-
+            public bool isActive = false;
+            string fileName;
             public VideoStreamWindow(string ip,int idx)
             {
-                //reader.Open(ip);
-                //Bitmap bmp = reader.ReadVideoFrame();
-                //reader.close();
-                reader.Open("camera_0.mp4");
-                long frameCount = reader.FrameCount;
-                List<Bitmap> bitmapList = new List<Bitmap>();
-                while (frameCount > 0)
-                {
-                    var img = reader.ReadVideoFrame();
-                    bitmapList.Add(img);
-                    frameCount--;
-                }
-                reader.Close();
                 reader.Open(ip);
+                Bitmap bmp = reader.ReadVideoFrame();
+                fileName = "camera_" + idx.ToString();
+                Directory.CreateDirectory("videos/" + fileName);
+                int numberOfVideos = System.IO.Directory.GetFiles("videos/" + fileName).Length;
 
-                videoWriter.Open("camera_" + idx.ToString() + ".mp4", 1920,1080, 30, VideoCodec.MPEG4, 25000);
+                System.Diagnostics.Debug.Print(numberOfVideos.ToString());
 
-                foreach (Bitmap f in bitmapList)
-                {
-                    videoWriter.WriteVideoFrame(f);
-                }
-                
-                
+                videoWriter.Open("videos/camera_" + idx.ToString() + "/" + numberOfVideos.ToString() + ".avi", bmp.Width, bmp.Height, 24, VideoCodec.Default, 25000);
             }
             public void set_frame(ref PictureBox pictureBox1)
             {
                 while (true)
                 {
-                    Bitmap bmp = reader.ReadVideoFrame();
-                    using (Graphics g = Graphics.FromImage(bmp))
+                    try
                     {
-                        g.DrawString(DateTime.Now.ToString(), new Font("Arial", 25), new SolidBrush(color: Color.Black), 0, 0);
+                        Bitmap bmp = reader.ReadVideoFrame();
+                        using (Graphics g = Graphics.FromImage(bmp))
+                        {
+                            g.FillRectangle(new SolidBrush(color: Color.White), new Rectangle(0, 0, 310, 45));
+                            g.DrawString(DateTime.Now.ToString(), new Font("Arial", 25), new SolidBrush(color: Color.Black), 0, 0);
+                        }
+                        videoWriter.WriteVideoFrame(bmp);
+                        if(isActive == true)
+                            pictureBox1.Image = bmp;
                     }
-                    videoWriter.WriteVideoFrame(bmp);
-                    pictureBox1.Image = bmp;
+                    catch(Exception e)
+                    {
+                        continue;
+                    }
                 }
             }
         }
@@ -65,7 +61,7 @@ namespace cameraViewer
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            vsw.isActive = true;
             Thread videoStreamThread = new Thread(() => vsw.set_frame(ref pictureBox1));
             videoStreamThread.IsBackground = true;
             videoStreamThread.Start();
