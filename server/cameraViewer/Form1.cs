@@ -8,16 +8,20 @@ using System.Threading;
 using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
+using Accord.Vision.Detection.Cascades;
+using Accord.Vision.Detection;
 namespace cameraViewer
 {
     public partial class Form1 : Form
     {
         public class VideoStreamWindow
         {
+            
             private VideoFileReader reader = new VideoFileReader();
             private VideoFileWriter videoWriter = new VideoFileWriter();
             public bool isActive = false;
             string fileName;
+            private HaarObjectDetector faceDetector = new HaarObjectDetector(new FaceHaarCascade());
             public VideoStreamWindow(string ip,int idx)
             {
                 reader.Open(ip);
@@ -32,19 +36,35 @@ namespace cameraViewer
             }
             public void set_frame(ref PictureBox pictureBox1)
             {
+                int frameIndex = 0;
                 while (true)
                 {
                     try
                     {
+
                         Bitmap bmp = reader.ReadVideoFrame();
+                        if(frameIndex%120 == 0)
+                        {
+                            var faceRectangles = faceDetector.ProcessFrame(bmp);
+                            if (faceRectangles.Length > 0)
+                            {
+                                Debug.Print("found face!");
+                            }
+                        }
+                        
                         using (Graphics g = Graphics.FromImage(bmp))
                         {
                             g.FillRectangle(new SolidBrush(color: Color.White), new Rectangle(0, 0, 310, 45));
                             g.DrawString(DateTime.Now.ToString(), new Font("Arial", 25), new SolidBrush(color: Color.Black), 0, 0);
+                            //foreach(var rect in faceRectangles)
+                            //{
+                            //    g.DrawRectangle(new Pen(Color.Green),rect);
+                            //}
                         }
                         videoWriter.WriteVideoFrame(bmp);
                         if(isActive == true)
                             pictureBox1.Image = bmp;
+                        frameIndex++;
                     }
                     catch(Exception e)
                     {
@@ -70,21 +90,20 @@ namespace cameraViewer
                 videoStreams.Add(tmpVideoStreamWindow);
                 lineIndex++;
             }
-            Debug.Print(videoStreams.Count.ToString());
-
             
 
-            
-            foreach(var videoStream in videoStreams)
+            if (videoStreams.Count > 0)
             {
-                Thread videoStreamThread = new Thread(() => videoStream.set_frame(ref pictureBox1));
-                videoStreamThread.IsBackground = true;
-                videoStreamThread.Start();
-                videoStreamThreads.Add(videoStreamThread);
+                foreach (var videoStream in videoStreams)
+                {
+                    Thread videoStreamThread = new Thread(() => videoStream.set_frame(ref pictureBox1));
+                    videoStreamThread.IsBackground = true;
+                    videoStreamThread.Start();
+                    videoStreamThreads.Add(videoStreamThread);
+                }
+               
+                videoStreams[0].isActive = true;
             }
-
-            videoStreams[0].isActive = true;
-           
         }
     }
 }

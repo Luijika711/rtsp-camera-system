@@ -38,3 +38,15 @@ C:\Users\luiji\repos\andorid_camera_system\server\cameraViewer\bin\Debug\System.
 C:\Users\luiji\repos\andorid_camera_system\server\cameraViewer\bin\Debug\System.Memory.xml
 C:\Users\luiji\repos\andorid_camera_system\server\cameraViewer\bin\Debug\System.Numerics.Vectors.xml
 C:\Users\luiji\repos\andorid_camera_system\server\cameraViewer\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\luiji\repos\andorid_camera_system\server\cameraViewer\bin\Debug\Accord.Imaging.dll
+C:\Users\luiji\repos\andorid_camera_system\server\cameraViewer\bin\Debug\Accord.MachineLearning.dll
+C:\Users\luiji\repos\andorid_camera_system\server\cameraViewer\bin\Debug\Accord.Math.Core.dll
+C:\Users\luiji\repos\andorid_camera_system\server\cameraViewer\bin\Debug\Accord.Math.dll
+C:\Users\luiji\repos\andorid_camera_system\server\cameraViewer\bin\Debug\Accord.Statistics.dll
+C:\Users\luiji\repos\andorid_camera_system\server\cameraViewer\bin\Debug\Accord.Vision.dll
+C:\Users\luiji\repos\andorid_camera_system\server\cameraViewer\bin\Debug\Accord.Imaging.xml
+C:\Users\luiji\repos\andorid_camera_system\server\cameraViewer\bin\Debug\Accord.MachineLearning.xml
+C:\Users\luiji\repos\andorid_camera_system\server\cameraViewer\bin\Debug\Accord.Math.xml
+C:\Users\luiji\repos\andorid_camera_system\server\cameraViewer\bin\Debug\Accord.Math.Core.xml
+C:\Users\luiji\repos\andorid_camera_system\server\cameraViewer\bin\Debug\Accord.Statistics.xml
+C:\Users\luiji\repos\andorid_camera_system\server\cameraViewer\bin\Debug\Accord.Vision.xml
