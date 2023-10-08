@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Threading;
 using System.Collections.Generic;
 using System.IO;
+using System.Diagnostics;
 namespace cameraViewer
 {
     public partial class Form1 : Form
@@ -25,7 +26,7 @@ namespace cameraViewer
                 Directory.CreateDirectory("videos/" + fileName);
                 int numberOfVideos = System.IO.Directory.GetFiles("videos/" + fileName).Length;
 
-                System.Diagnostics.Debug.Print(numberOfVideos.ToString());
+                //System.Diagnostics.Debug.Print(numberOfVideos.ToString());
 
                 videoWriter.Open("videos/camera_" + idx.ToString() + "/" + numberOfVideos.ToString() + ".avi", bmp.Width, bmp.Height, 24, VideoCodec.Default, 25000);
             }
@@ -47,13 +48,14 @@ namespace cameraViewer
                     }
                     catch(Exception e)
                     {
+                        Debug.Print(e.Message);
                         continue;
                     }
                 }
             }
         }
-
-        VideoStreamWindow vsw = new VideoStreamWindow("rtsp://192.168.100.95:8080/h264_ulaw.sdp",0);
+        List<VideoStreamWindow> videoStreams = new List<VideoStreamWindow>();
+        List<Thread> videoStreamThreads = new List<Thread>();
         public Form1()
         {
             InitializeComponent();
@@ -61,17 +63,28 @@ namespace cameraViewer
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            vsw.isActive = true;
-            Thread videoStreamThread = new Thread(() => vsw.set_frame(ref pictureBox1));
-            videoStreamThread.IsBackground = true;
-            videoStreamThread.Start();
+            int lineIndex = 0;
+            foreach(var line in File.ReadAllLines("cameras.txt"))
+            {
+                var tmpVideoStreamWindow = new VideoStreamWindow(line.ToString(), lineIndex);
+                videoStreams.Add(tmpVideoStreamWindow);
+                lineIndex++;
+            }
+            Debug.Print(videoStreams.Count.ToString());
+
             
-            /*
-            ThreadStart childref = new ThreadStart(set_frame);
-            Thread childThread = new Thread(childref);
-            childThread.IsBackground = true;
-            childThread.Start();
-            */
+
+            
+            foreach(var videoStream in videoStreams)
+            {
+                Thread videoStreamThread = new Thread(() => videoStream.set_frame(ref pictureBox1));
+                videoStreamThread.IsBackground = true;
+                videoStreamThread.Start();
+                videoStreamThreads.Add(videoStreamThread);
+            }
+
+            videoStreams[0].isActive = true;
+           
         }
     }
 }
