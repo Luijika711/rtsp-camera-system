@@ -33,7 +33,7 @@ namespace cameraViewer
 
                 //System.Diagnostics.Debug.Print(numberOfVideos.ToString());
 
-                videoWriter.Open("videos/camera_" + idx.ToString() + "/" + numberOfVideos.ToString() + ".avi", bmp.Width, bmp.Height, 24, VideoCodec.Default, 25000);
+                videoWriter.Open("videos/camera_" + idx.ToString() + "/" + numberOfVideos.ToString() + ".avi", bmp.Width, bmp.Height, 30, VideoCodec.Default, 25000);
             }
             public void closeStreams()
             {
@@ -47,7 +47,9 @@ namespace cameraViewer
                 {
                     try
                     {
+                        
                         Bitmap bmp = reader.ReadVideoFrame();
+                        /*
                         bool frameHasFace = false;
                         if(frameIndex%120 == 0)
                         {
@@ -63,12 +65,12 @@ namespace cameraViewer
                             g.FillRectangle(new SolidBrush(color: Color.White), new Rectangle(0, 0, 310, 45));
                             g.DrawString(DateTime.Now.ToString(), new Font("Arial", 25), new SolidBrush(color: Color.Black), 0, 0);
                         }
-
+                        
                         if (frameHasFace == true)//code goes here
                         {
                             Debug.Print("[FACE FOUND]");       
                         }
-
+                        */
                         videoWriter.WriteVideoFrame(bmp);
                         if(isActive == true)
                             pictureBox1.Image = bmp;
