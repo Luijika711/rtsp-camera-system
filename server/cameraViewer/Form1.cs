@@ -14,80 +14,9 @@ namespace cameraViewer
 {
     public partial class Form1 : Form
     {
-        public class VideoStreamWindow
-        {
-            
-            private VideoFileReader reader = new VideoFileReader();
-            private VideoFileWriter videoWriter = new VideoFileWriter();
-            public bool isActive = false;
-            string fileName;
-            private HaarObjectDetector faceDetector = new HaarObjectDetector(new FaceHaarCascade());
-            private DateTime lastNotificationTime = new DateTime();
-            public VideoStreamWindow(string ip,int idx)
-            {
-                reader.Open(ip);
-                Bitmap bmp = reader.ReadVideoFrame();
-                fileName = "camera_" + idx.ToString();
-                Directory.CreateDirectory("videos/" + fileName);
-                int numberOfVideos = System.IO.Directory.GetFiles("videos/" + fileName).Length;
-
-                //System.Diagnostics.Debug.Print(numberOfVideos.ToString());
-
-                videoWriter.Open("videos/camera_" + idx.ToString() + "/" + numberOfVideos.ToString() + ".avi", bmp.Width, bmp.Height, 30, VideoCodec.Default, 25000);
-            }
-            public void closeStreams()
-            {
-                videoWriter.Close();
-                reader.Close();
-            }
-            public void set_frame(ref PictureBox pictureBox1)
-            {
-                int frameIndex = 0;
-                while (true)
-                {
-                    try
-                    {
-                        
-                        Bitmap bmp = reader.ReadVideoFrame();
-                        /*
-                        bool frameHasFace = false;
-                        if(frameIndex%120 == 0)
-                        {
-                            var faceRectangles = faceDetector.ProcessFrame(bmp);
-                            if (faceRectangles.Length > 0)
-                            {
-                                frameHasFace = true;
-                            }
-                        }
-                        
-                        using (Graphics g = Graphics.FromImage(bmp))
-                        {
-                            g.FillRectangle(new SolidBrush(color: Color.White), new Rectangle(0, 0, 310, 45));
-                            g.DrawString(DateTime.Now.ToString(), new Font("Arial", 25), new SolidBrush(color: Color.Black), 0, 0);
-                        }
-                        
-                        if (frameHasFace == true)//code goes here
-                        {
-                            Debug.Print("[FACE FOUND]");       
-                        }
-                        */
-                        videoWriter.WriteVideoFrame(bmp);
-                        if(isActive == true)
-                            pictureBox1.Image = bmp;
-                        frameIndex++;
-                    }
-                    catch(Exception e)
-                    {
-                        Debug.Print(e.Message);
-                        continue;
-                    }
-                }
-            }
-        }
-
-
-        List<VideoStreamWindow> videoStreams = new List<VideoStreamWindow>();
-        List<Thread> videoStreamThreads = new List<Thread>();
+        List<VideoStreamWindow> VideoStreams = new List<VideoStreamWindow>();
+        List<Thread> VideoStreamThreads = new List<Thread>();
+        int VideoStreamIndex = 0;
         public Form1()
         {
             InitializeComponent();
@@ -95,27 +24,65 @@ namespace cameraViewer
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            int lineIndex = 0;
+            int LineIndex = 0;
             foreach(var line in File.ReadAllLines("cameras.txt"))
             {
-                var tmpVideoStreamWindow = new VideoStreamWindow(line.ToString(), lineIndex);
-                videoStreams.Add(tmpVideoStreamWindow);
-                lineIndex++;
+                var CurrentVideoStreamWindow = new VideoStreamWindow(line.ToString(), LineIndex);
+                VideoStreams.Add(CurrentVideoStreamWindow);
+                LineIndex++;
             }
             
 
-            if (videoStreams.Count > 0)
+            if (VideoStreams.Count > 0)
             {
-                foreach (var videoStream in videoStreams)
+                foreach (var VideoStream in VideoStreams)
                 {
-                    Thread videoStreamThread = new Thread(() => videoStream.set_frame(ref pictureBox1));
-                    videoStreamThread.IsBackground = true;
-                    videoStreamThread.Start();
-                    videoStreamThreads.Add(videoStreamThread);
+                    Thread VideoStreamThread = new Thread(() => VideoStream.set_frame(ref pictureBox1));
+                    VideoStreamThread.IsBackground = true;
+                    VideoStreamThread.Start();
+                    VideoStreamThreads.Add(VideoStreamThread);
                 }
                
-                videoStreams[0].isActive = true;
+                VideoStreams[VideoStreamIndex].IsActive = true;
             }
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            /*
+            if(VideoStreams[VideoStreamIndex].IsActive == true)
+            {
+                VideoStreams[VideoStreamIndex].IsActive = false;
+            }
+            */
+            VideoStreamIndex--;
+            if(VideoStreamIndex < 0)
+            {
+                VideoStreamIndex = VideoStreams.Count - 1;
+            }
+            foreach (var v in VideoStreams)
+                v.IsActive = false;
+            VideoStreams[VideoStreamIndex].IsActive = true;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            /*
+            if (VideoStreams[VideoStreamIndex].IsActive == true)
+            {
+                VideoStreams[VideoStreamIndex].IsActive = false;
+            }
+            */
+            VideoStreamIndex++;
+            VideoStreamIndex %= (VideoStreams.Count);
+            foreach (var v in VideoStreams)
+                v.IsActive = false;
+            VideoStreams[VideoStreamIndex].IsActive = true;
         }
     }
 }
