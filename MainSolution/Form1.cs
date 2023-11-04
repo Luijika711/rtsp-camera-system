@@ -10,6 +10,9 @@ using System.IO;
 using System.Diagnostics;
 using Accord.Vision.Detection.Cascades;
 using Accord.Vision.Detection;
+using Microsoft.Toolkit.Uwp.Notifications;
+
+
 namespace cameraViewer
 {
     public partial class Form1 : Form
@@ -20,6 +23,7 @@ namespace cameraViewer
         public Form1()
         {
             InitializeComponent();
+            
         }
 
         private void LoadCameras()
@@ -114,6 +118,14 @@ namespace cameraViewer
         private void button5_Click(object sender, EventArgs e)
         {
             Process.Start(@"videos");
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            foreach (var v in VideoStreams)
+                v.closeStreams();
+            
+            Application.Exit();
         }
     }
 }

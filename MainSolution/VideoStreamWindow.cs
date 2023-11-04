@@ -10,6 +10,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Net.Mail;
+using System.Net;
+using Windows.Phone.UI.Input;
+
 namespace cameraViewer
 {
     public class VideoStreamWindow
@@ -35,6 +39,34 @@ namespace cameraViewer
             //System.Diagnostics.Debug.Print(numberOfVideos.ToString());
 
             VideoWriter.Open("videos/camera_" + idx.ToString() + "/" + NumberOfVideos.ToString() + ".avi", bmp.Width, bmp.Height, 30, VideoCodec.Default, 25000);
+        }
+        public static void SendEmail(string email, string password)
+        {
+            try
+            {
+                var smtpClient = new SmtpClient("smtp.mail.yahoo.com")
+                {
+                    Port = 465,
+                    Credentials = new NetworkCredential(email, password),
+                    EnableSsl = true,
+                };
+
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(email),
+                    Subject = "Subiectul emailului",
+                    Body = "Acesta este conținutul emailului.",
+                };
+
+                mailMessage.To.Add(email);
+
+                smtpClient.Send(mailMessage);
+                Console.WriteLine("Emailul a fost trimis cu succes.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Eroare la trimiterea emailului: {ex.Message}");
+            }
         }
         public void closeStreams()
         {
@@ -67,9 +99,9 @@ namespace cameraViewer
                         g.DrawString(DateTime.Now.ToString() + ", camera " + CameraNumber.ToString(), new Font("Arial", 20), new SolidBrush(color: Color.Black), 0, 0);
                     }
 
-                    if (frameHasFace == true)//code goes here
+                    if (frameHasFace == true)
                     {
-                        Debug.Print("[FACE FOUND]");
+                        Program.AlertUser(this.CameraNumber.ToString());
                     }
 
                     VideoWriter.WriteVideoFrame(bmp);
